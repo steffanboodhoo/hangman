@@ -2,6 +2,7 @@
 // const axios = require('axios');
 window.onload = function(){
     let WORD = '', SOLUTION = [], HEALTH=-1, HEALTH_DISPLAY = {};
+
     axios.get('http://localhost:5000/game/start').then( resp => {
         console.log(resp.data)
         WORD = resp.data.word;
@@ -75,7 +76,6 @@ window.onload = function(){
             word: WORD,
             health: HEALTH
         }
-        // console.log()
         axios.post('http://localhost:5000/game/update', update_data).then( resp => console.log(resp))
     }
 
@@ -102,4 +102,19 @@ window.onload = function(){
         $('#stats_display').append( $('<h4>').append('You Loose') )
     }
     
+    //SCORES VIEW
+    axios.get('http://localhost:5000/score').then( resp => {
+        create_scores_view(resp.data)
+    })
+    const create_scores_view = (scores) => {
+        console.log(scores)
+        let elems = scores.map( el => {
+            let row = $('<div>',{class:'row'})
+            $('<div>',{class:'col s6'}).append(el.credentials).appendTo(row)
+            $('<div>',{class:'col s6'}).append(el.score).appendTo(row)
+            return row;
+        })
+        console.log('pew pepw')
+        $('#scores').append(elems)
+    }
 }

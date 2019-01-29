@@ -33,12 +33,20 @@ def game_update():
     session['state'] = jwt.encode(update_data, token_key)
     return '',204
 
-@app.route('/game/reset')
+@app.route('/game/reset', methods=['GET'])
 def game_restore():
     if 'state' in session:
         session.pop('state')
     return '',204
-    
+
 def read_token():
 	token = session['state']
 	return jwt.decode(token, token_key)
+
+@app.route('/score', methods=['GET','POST'])
+def scores():
+    if request.method == 'GET':
+        return json.dumps(gateway.handle_get_scores())
+    else:
+        data = request.get_json()
+        return json.dumps(gateway.handle_post_score(data)),200
