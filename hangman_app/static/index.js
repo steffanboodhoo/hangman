@@ -1,14 +1,16 @@
 // import Axios from "axios";
 // const axios = require('axios');
 window.onload = function(){
-    let WORD = '', SOLUTION = [], HEALTH=-1, HEALTH_DISPLAY = {}, WIN=false;
+    let WORD = '', SOLUTION = [], HEALTH=-1, HEALTH_DISPLAY = {}, WIN=false, START_TIME=0, END_TIME = 0;
+    let elems = document.querySelectorAll('#modal1');
+    let modal = M.Modal.init(elems, {})[0];
 
     axios.get('http://localhost:5000/game/start').then( resp => {
         console.log(resp.data)
         WORD = resp.data.word;
         SOLUTION = resp.data.solution;
         HEALTH = resp.data.health;
-        
+        START_TIME = resp.data.start_time
         update_solution_view('#solution_display', SOLUTION);
         update_health_view(HEALTH);
         // $('#stats_display').append( $('<h4>').append(`Health Remaining:${health}`) )
@@ -74,7 +76,8 @@ window.onload = function(){
         const update_data = {
             solution: SOLUTION,
             word: WORD,
-            health: HEALTH
+            health: HEALTH,
+            start_time:START_TIME
         }
         axios.post('http://localhost:5000/game/update', update_data).then( resp => console.log(resp))
     }
@@ -92,8 +95,26 @@ window.onload = function(){
         if (SOLUTION.join('')!=WORD)
             return;
         WIN=true
+        END_TIME = Math.floor(Date.now() / 1000);
         $('#stats_display').append( $('<h4>').append('You Win') )
+        modal.open();
     }
+    
+    const submit_score = (ev) => {
+        let params = {
+            score:END_TIME - START_TIME,
+            credentials:document.getElementById('credentials').value
+        };
+        axios.post('http://localhost:5000/score',params).then( resp => {
+            console.log(resp)
+            window.location.reload();
+        })
+        axios.get('/game/reset')
+        
+    }
+    $('#submit').click( submit_score );
+    
+
     //LOSER
     const update_lose = (health) => {
         update_health_view(health);

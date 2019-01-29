@@ -15,5 +15,6 @@ def handle_get_scores():
 
 def handle_post_score(data):
     client = db_client()
+    print data
     resp = client.general_insert('score', data)
     return resp
