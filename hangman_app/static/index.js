@@ -1,7 +1,7 @@
 // import Axios from "axios";
 // const axios = require('axios');
 window.onload = function(){
-    let WORD = '', SOLUTION = [], HEALTH=-1, HEALTH_DISPLAY = {};
+    let WORD = '', SOLUTION = [], HEALTH=-1, HEALTH_DISPLAY = {}, WIN=false;
 
     axios.get('http://localhost:5000/game/start').then( resp => {
         console.log(resp.data)
@@ -55,7 +55,7 @@ window.onload = function(){
     }
 
     const handle_select_letter  = (letter) => {
-        if(HEALTH==0)
+        if(HEALTH==0||WIN)
             return;
         let found_flag = false;
         WORD.split('').forEach( (el,i) => {
@@ -91,6 +91,7 @@ window.onload = function(){
     const update_win = (WORD, SOLUTION) => {
         if (SOLUTION.join('')!=WORD)
             return;
+        WIN=true
         $('#stats_display').append( $('<h4>').append('You Win') )
     }
     //LOSER
