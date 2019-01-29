@@ -35,8 +35,9 @@ class db_client:
 		new_entity = Entity(**params)
 		print new_entity
 		session.add(new_entity)
+		session.commit()
 		session.flush()#ensures the data is written so any auto-generated ids are generated
-		# session.close()
+		session.close()
 		resp = new_entity.__dict__
 		resp.pop('_sa_instance_state')
 		return resp
