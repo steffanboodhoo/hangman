@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import Keypad from './Keypad';
+import SolutionDisplay from './SolutionDisplay';
+import Graphic from './Graphic';
 
 class Game extends Component{
     constructor(props){
@@ -13,7 +15,16 @@ class Game extends Component{
     render(){
         return(<div>
             <h1>Game Component</h1>
-            <Keypad select_letter={this.handle_letter_choice.bind(this)} />
+            <div>
+                <Keypad select_letter={this.handle_letter_choice.bind(this)} />
+            </div>
+            <div>
+                <SolutionDisplay solution={this.state.solution}/>
+            </div>
+            <div>
+                <Graphic health={this.state.health}/>
+            </div>
+            
         </div>)
     }
 
@@ -22,15 +33,19 @@ class Game extends Component{
     }
 
     handle_letter_choice(letter){
-        console.log(letter)
-        let letter_found = false;
+        let letter_found = false, temp_solution = this.state.solution;
         this.state.word.split('').forEach( (el,i) => {
             if(letter==el){
                 letter_found = true;
-                this.state.solution[i] = letter;
+                temp_solution[i] = letter;
             }
         })
-        
+
+        if(letter_found){
+            this.setState({solution:temp_solution})
+        }else{
+            this.setState({health:this.state.health-1})
+        }
         // console.log(this.state.solution)
 
     }
