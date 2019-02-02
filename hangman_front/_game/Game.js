@@ -1,4 +1,8 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as Actions from '../ducks/Game/Actions';
+
 import Keypad from './Keypad';
 import SolutionDisplay from './SolutionDisplay';
 import Graphic from './Graphic';
@@ -6,11 +10,17 @@ import Graphic from './Graphic';
 class Game extends Component{
     constructor(props){
         super(props);
+        // this.state ={
+        //     word: '',
+        //     solution: [],
+        //     health: -1
+        // }
         this.state ={
-            word: '',
-            solution: [],
-            health: -1
+            word: this.props.Game.getIn(['word']),
+            solution: this.props.Game.getIn(['solution']).valueSeq().toArray(),
+            health: this.props.Game.getIn(['health'])
         }
+        console.log(this.state)
     }
     render(){
         return(<div>
@@ -30,6 +40,7 @@ class Game extends Component{
 
     componentDidMount(){
         this.setState({word:'test', solution:['_','_','_','_'], health:5});
+        
     }
 
     handle_letter_choice(letter){
@@ -50,5 +61,7 @@ class Game extends Component{
 
     }
 }
+const mapStateToProps = (state) => ({Game:state.Game});
+const mapActionsToProps = (dispatch) =>  ({GameActions:bindActionCreators(Actions,dispatch)}) 
 
-export default Game;
+export default connect(mapStateToProps,mapActionsToProps)(Game);
